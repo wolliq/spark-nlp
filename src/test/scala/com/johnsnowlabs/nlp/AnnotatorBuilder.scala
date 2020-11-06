@@ -23,6 +23,29 @@ import org.scalatest._
   */
 object AnnotatorBuilder extends FlatSpec { this: Suite =>
 
+  def withDocPatterRemoverPipeline(dataset: Dataset[Row], cleanupMode: String = "disabled"): Dataset[Row] = {
+    val documentAssembler = new DocumentAssembler()
+      .setInputCol("text")
+      .setCleanupMode(cleanupMode)
+
+    val docPattRemover = new DocPatternRemover()
+      .setInputCols("document")
+      .setOutputCol("cleanedDoc")
+      .setTargetPattern("<[^>]*>") // remove every tags enclosed in <>
+      .setRemovalPolicy("all")
+
+    val docPatternRemoverPipeline =
+      new Pipeline()
+        .setStages(
+          Array(
+            documentAssembler,
+            docPattRemover))
+
+    val ds = docPatternRemoverPipeline.fit(dataset).transform(dataset)
+    ds.show(false)
+    ds
+  }
+
   def withDocumentAssembler(dataset: Dataset[Row], cleanupMode: String = "disabled"): Dataset[Row] = {
     val documentAssembler = new DocumentAssembler()
       .setInputCol("text")

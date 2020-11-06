@@ -15,6 +15,23 @@ object ContentProvider {
     "who saw nothing in Freemasonry but the external forms and ceremonies, and prized the strict " +
     "performance of these forms without troubling about their purport or significance."
 
+  val scrapedEnglishPhrase: String =
+    """
+      |<div class='w3-container top'>
+      |  <a class='w3schools-logo notranslate' href='//www.w3schools.com'>w3schools<span class='dotcom'>.com</span></a>
+      |
+      |  <div id="loginactioncontainer" class='w3-right'>
+      |    <div id="mypagediv"></div>
+      |    <a id="w3loginbtn" style="display:none;" class="login w3-right" href='javascript:void(0);' onclick='w3_open_nav("login")'>LOG IN</a>
+      |  </div>
+      |
+      |  <div id="theworldsgreatest" class='w3-right w3-hide-small w3-wide toptext' style="font-family:'Segoe UI',Arial,sans-serif">
+      |    THE WORLD'S LARGEST WEB DEVELOPER SITE
+      |  </div>
+      |
+      |</div>
+      |""".stripMargin
+
   val sbdTestParagraph: String = "In the third category he included those Brothers (the majority) who saw nothing " +
     "in Freemasonry but the external forms and ceremonies, and prized the strict performance of these forms without " +
     "troubling about their purport or significance.@@ Such were Willarski and even the Grand Master of the principal " +
