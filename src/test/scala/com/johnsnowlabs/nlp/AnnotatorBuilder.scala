@@ -32,7 +32,7 @@ object AnnotatorBuilder extends FlatSpec { this: Suite =>
       .setInputCols("document")
       .setOutputCol("cleanedDoc")
       .setTargetPattern("<[^>]*>") // remove every tags enclosed in <>
-      .setRemovalPolicy("all")
+      .setRemovalPolicy("pretty_all")
 
     val docPatternRemoverPipeline =
       new Pipeline()

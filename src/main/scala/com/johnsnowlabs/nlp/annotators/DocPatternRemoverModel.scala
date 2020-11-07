@@ -37,33 +37,55 @@ class DocPatternRemoverModel(override val uid: String) extends AnnotatorModel[Do
 
   def this() = this(Identifiable.randomUID("DOC_PATTERN_REPLACER"))
 
-  /** pattern to grab from text as token candidates. Defaults \\S+
+  setDefault(
+    targetPattern -> "<[^>]*>",
+    removalPolicy -> "pretty_all"
+  )
+
+  /** pattern to grab from text as token candidates. Defaults <[^>]*>
     *
     * @group setParam
     **/
   def setTargetPattern(value: String): this.type = set(targetPattern, value)
 
-  /** pattern to grab from text as token candidates. Defaults \\S+
+  /** pattern to grab from text as token candidates. Defaults <[^>]*>
     *
     * @group getParam
     **/
   def getTargetPattern: String = $(targetPattern)
 
-  /** pattern to grab from text as token candidates. Defaults \\S+
+  /** pattern to grab from text as token candidates. Defaults pretty_all
     *
     * @group setParam
     **/
   def setRemovalPolicy(value: String): this.type = set(removalPolicy, value)
 
-  /** pattern to grab from text as token candidates. Defaults \\S+
+  /** pattern to grab from text as token candidates. Defaults pretty_all
     *
     * @group getParam
     **/
   def getRemovalPolicy: String = $(removalPolicy)
 
-  private def searchAndRemove(s: String, pattern: String)(policy: String) = policy match {
-    case "all" => s.replaceAll(pattern, EmptyStr)
-    case "first" => s.replaceFirst(pattern, EmptyStr)
+  private def prettyAllFormatter(s: String, pattern: String) = {
+    val allReplacedStr = s.replaceAll(pattern, EmptyStr)
+    allReplacedStr.split("\\s+").map(_.trim).mkString(" ")
+  }
+
+  private def prettyFirstFormatter(s: String, pattern: String) = {
+    val firstReplacedStr = s.replaceFirst(pattern, EmptyStr)
+    firstReplacedStr.split("\\s+").map(_.trim).mkString(" ")
+  }
+
+  private def searchAndRemove(s: String, pattern: String)(policy: String) = {
+    require(!s.isEmpty && !pattern.isEmpty && !policy.isEmpty)
+
+    policy match {
+      case "all" => s.replaceAll(pattern, EmptyStr)
+      case "pretty_all" => prettyAllFormatter(s, pattern)
+      case "first" => s.replaceFirst(pattern, EmptyStr)
+      case "pretty_first" => prettyFirstFormatter(s, pattern)
+      case _ => throw new Exception("Wrong policy parameter in DocPatterRemover annotation")
+    }
   }
 
   /**
@@ -73,15 +95,10 @@ class DocPatternRemoverModel(override val uid: String) extends AnnotatorModel[Do
     * @return any number of annotations processed for every input annotation. Not necessary one to one relationship
     */
   override def annotate(annotations: Seq[Annotation]): Seq[Annotation] = {
-    annotations.map(annotation => {
-      Annotation(
-        outputAnnotatorType,
-        annotation.begin,
-        annotation.end,
-        searchAndRemove(annotation.result, getTargetPattern)(getRemovalPolicy),
-        annotation.metadata
-      )
-    })
+    annotations.
+      map(annotation =>
+        Annotation(
+          searchAndRemove(annotation.result, getTargetPattern)(getRemovalPolicy)))
   }
 }
 
