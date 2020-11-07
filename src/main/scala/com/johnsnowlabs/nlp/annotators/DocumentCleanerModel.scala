@@ -6,7 +6,7 @@ import org.apache.spark.ml.param.Param
 import org.apache.spark.ml.util.Identifiable
 
 
-class DocPatternRemoverModel(override val uid: String) extends AnnotatorModel[DocPatternRemoverModel] {
+class DocumentCleanerModel(override val uid: String) extends AnnotatorModel[DocumentCleanerModel] {
 
   val EmptyStr = ""
 
@@ -104,4 +104,4 @@ class DocPatternRemoverModel(override val uid: String) extends AnnotatorModel[Do
 }
 
 
-object DocPatternRemoverModel extends ParamsAndFeaturesReadable[NormalizerModel]
+object DocumentCleanerModel extends ParamsAndFeaturesReadable[NormalizerModel]

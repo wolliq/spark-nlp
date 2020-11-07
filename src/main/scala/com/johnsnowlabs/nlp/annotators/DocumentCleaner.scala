@@ -32,7 +32,7 @@ import org.apache.spark.sql.Dataset
   * @groupprio getParam  5
   * @groupdesc Parameters A list of (hyper-)parameter keys this annotator can take. Users can set and get the parameter values through setters and getters, respectively.
   */
-class DocPatternRemover(override val uid: String) extends AnnotatorApproach[DocPatternRemoverModel] {
+class DocumentCleaner(override val uid: String) extends AnnotatorApproach[DocumentCleanerModel] {
 
   override val description: String = "Annotator that identifies points of analysis in a useful manner"
 
@@ -114,12 +114,12 @@ class DocPatternRemover(override val uid: String) extends AnnotatorApproach[DocP
     *  @return TokenizedModel
     *
     */
-  override def train(dataset: Dataset[_], recursivePipeline: Option[PipelineModel]): DocPatternRemoverModel = {
-    new DocPatternRemoverModel()
+  override def train(dataset: Dataset[_], recursivePipeline: Option[PipelineModel]): DocumentCleanerModel = {
+    new DocumentCleanerModel()
       .setTargetPattern($(targetPattern))
       .setRemovalPolicy($(removalPolicy))
   }
 }
 
 
-object DocPatternRemover extends DefaultParamsReadable[DocPatternRemover]
+object DocumentCleaner extends DefaultParamsReadable[DocumentCleaner]

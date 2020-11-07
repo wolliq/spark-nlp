@@ -23,12 +23,12 @@ import org.scalatest._
   */
 object AnnotatorBuilder extends FlatSpec { this: Suite =>
 
-  def withDocPatterRemoverPipeline(dataset: Dataset[Row], cleanupMode: String = "disabled"): Dataset[Row] = {
+  def withDocumentCleanerPipeline(dataset: Dataset[Row], cleanupMode: String = "disabled"): Dataset[Row] = {
     val documentAssembler = new DocumentAssembler()
       .setInputCol("text")
       .setCleanupMode(cleanupMode)
 
-    val docPattRemover = new DocPatternRemover()
+    val documentCleaner = new DocumentCleaner()
       .setInputCols("document")
       .setOutputCol("cleanedDoc")
       .setTargetPattern("<[^>]*>") // remove every tags enclosed in <>
@@ -39,7 +39,7 @@ object AnnotatorBuilder extends FlatSpec { this: Suite =>
         .setStages(
           Array(
             documentAssembler,
-            docPattRemover))
+            documentCleaner))
 
     val ds = docPatternRemoverPipeline.fit(dataset).transform(dataset)
     ds.show(false)
