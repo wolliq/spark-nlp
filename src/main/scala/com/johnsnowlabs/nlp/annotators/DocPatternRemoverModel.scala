@@ -66,12 +66,12 @@ class DocPatternRemoverModel(override val uid: String) extends AnnotatorModel[Do
     **/
   def getRemovalPolicy: String = $(removalPolicy)
 
-  private def prettyAllFormatter(s: String, pattern: String) = {
+  private def withPrettyAllFormatter(s: String, pattern: String) = {
     val allReplacedStr = s.replaceAll(pattern, EmptyStr)
     allReplacedStr.split("\\s+").map(_.trim).mkString(" ")
   }
 
-  private def prettyFirstFormatter(s: String, pattern: String) = {
+  private def withPrettyFirstFormatter(s: String, pattern: String) = {
     val firstReplacedStr = s.replaceFirst(pattern, EmptyStr)
     firstReplacedStr.split("\\s+").map(_.trim).mkString(" ")
   }
@@ -81,9 +81,9 @@ class DocPatternRemoverModel(override val uid: String) extends AnnotatorModel[Do
 
     policy match {
       case "all" => s.replaceAll(pattern, EmptyStr)
-      case "pretty_all" => prettyAllFormatter(s, pattern)
+      case "pretty_all" => withPrettyAllFormatter(s, pattern)
       case "first" => s.replaceFirst(pattern, EmptyStr)
-      case "pretty_first" => prettyFirstFormatter(s, pattern)
+      case "pretty_first" => withPrettyFirstFormatter(s, pattern)
       case _ => throw new Exception("Wrong policy parameter in DocPatterRemover annotation")
     }
   }
@@ -98,7 +98,8 @@ class DocPatternRemoverModel(override val uid: String) extends AnnotatorModel[Do
     annotations.
       map(annotation =>
         Annotation(
-          searchAndRemove(annotation.result, getTargetPattern)(getRemovalPolicy)))
+          searchAndRemove(annotation.result, getTargetPattern)(getRemovalPolicy),
+          annotation.metadata))
   }
 }
 

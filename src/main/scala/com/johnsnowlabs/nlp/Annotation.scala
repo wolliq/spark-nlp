@@ -103,6 +103,14 @@ object Annotation {
     Map.empty[String, String],
     Array.emptyFloatArray
   )
+  def apply(rawText: String, metadata: Map[String, String]): Annotation = Annotation(
+    AnnotatorType.DOCUMENT,
+    0,
+    rawText.length - 1,
+    rawText,
+    metadata,
+    Array.emptyFloatArray
+  )
 
   /** dataframe collect of a specific annotation column*/
   def collect(dataset: Dataset[Row], column: String): Array[Array[Annotation]] = {
