@@ -13,20 +13,23 @@ trait DocPatternRemoverBehaviors extends FlatSpec {
     val text = ContentProvider.scrapedEnglishPhrase
     val df = AnnotatorBuilder.withDocPatterRemoverPipeline(DataBuilder.basicDataBuild(text))
 
-    val assembledDoc: Array[Annotation] = df
+    val cleanedDoc: Array[Annotation] = df
       .select("cleanedDoc")
       .collect
       .flatMap { _.getSeq[Row](0) }
       .map { Annotation(_) }
   }
 
-  "A DocumentAssembler" should "annotate with the correct indexes" in {
+  "A DocPatternRemover" should "annotate with the correct indexes" in {
     val f = fixture
 
-    println(f.text.head)
-    println(f.text(f.assembledDoc.head.begin))
+    0 should equal (f.cleanedDoc.head.begin)
+    59 should equal (f.cleanedDoc.head.`end`)
+  }
 
-//    f.text.head should equal (f.text(f.assembledDoc.head.begin))
-//    f.text.last should equal (f.text(f.assembledDoc.head.end))
+  "A DocPatternRemover" should "annotate with the correct metadata" in {
+    val f = fixture
+
+    Map("sentence" -> "0") should equal (f.cleanedDoc.head.metadata)
   }
 }
